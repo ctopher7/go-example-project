@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/ctopher7/gltc/v2/part1/model"
 )
 
-func (r *repository) ReadNDJson(path string) (res []map[string]interface{}, err error) {
+func (r *repository) ReadNDJson(path string) (res []model.Stock, err error) {
 	jsonFile, err := os.Open(path)
 	if err != nil {
 		return
@@ -22,7 +24,7 @@ func (r *repository) ReadNDJson(path string) (res []map[string]interface{}, err 
 
 	d := json.NewDecoder(strings.NewReader(string(byteValue)))
 	for {
-		var json map[string]interface{}
+		var json model.Stock
 		err = d.Decode(&json)
 		if err != nil {
 			//io.EOF is the expected err value for end of file

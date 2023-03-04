@@ -1,6 +1,8 @@
 package impl
 
-func (d *datalogic) GetAllNDJsonFileInDir(directoryPath string) (res []map[string]interface{}, err error) {
+import "github.com/ctopher7/gltc/v2/part1/model"
+
+func (d *datalogic) GetAllNDJsonFileInDir(directoryPath string) (res []model.Stock, err error) {
 	files, err := d.fsRepository.GetAllFilename(directoryPath)
 	if err != nil {
 		return

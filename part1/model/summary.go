@@ -4,13 +4,13 @@ type GetSummaryReq struct {
 	StockName string
 }
 
-type GetSummaryRes struct {
-	PreviousPrice int32
-	OpenPrice     int32
-	HighestPrice  int32
-	LowestPrice   int32
-	ClosePrice    int32
-	AveragePrice  int32
-	Volume        int32
-	Value         int32
+type Ohlc struct {
+	PreviousPrice int64
+	OpenPrice     int64
+	HighestPrice  int64
+	LowestPrice   int64
+	ClosePrice    int64
+	AveragePrice  int64
+	Volume        int64
+	Value         int64
 }

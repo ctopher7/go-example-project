@@ -3,5 +3,5 @@ package fs
 import "github.com/ctopher7/gltc/v2/part1/model"
 
 type Datalogic interface {
-	GetAllNDJsonFileInDir(directoryPath string) (res []model.Stock, err error)
+	CalculateOhlc(dataset []model.Stock) (res map[string]model.Ohlc, err error)
 }

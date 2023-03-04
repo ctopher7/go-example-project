@@ -6,6 +6,8 @@ import (
 
 	fsDl "github.com/ctopher7/gltc/v2/part1/logic/datalogic/fs"
 	fsDlImpl "github.com/ctopher7/gltc/v2/part1/logic/datalogic/fs/impl"
+	ohlcDl "github.com/ctopher7/gltc/v2/part1/logic/datalogic/ohlc"
+	ohlcDlImpl "github.com/ctopher7/gltc/v2/part1/logic/datalogic/ohlc/impl"
 
 	ohlcUc "github.com/ctopher7/gltc/v2/part1/logic/usecase/ohlc"
 	ohlcUcImpl "github.com/ctopher7/gltc/v2/part1/logic/usecase/ohlc/impl"
@@ -14,7 +16,8 @@ import (
 var (
 	fsRepository fsRepo.Repository
 
-	fsDatalogic fsDl.Datalogic
+	fsDatalogic   fsDl.Datalogic
+	ohlcDatalogic ohlcDl.Datalogic
 
 	ohlcUsecase ohlcUc.Usecase
 )
@@ -25,10 +28,11 @@ func initRepositoryLayer() {
 
 func initDatalogicLayer() {
 	fsDatalogic = fsDlImpl.New(fsRepository)
+	ohlcDatalogic = ohlcDlImpl.New()
 }
 
 func initUsecaseLayer() {
-	ohlcUsecase = ohlcUcImpl.New(fsDatalogic)
+	ohlcUsecase = ohlcUcImpl.New(fsDatalogic, ohlcDatalogic)
 }
 
 func initLogic() {

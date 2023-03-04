@@ -11,12 +11,12 @@ message GetSummaryRequest{
 }
 
 message GetSummaryResponse{
-    int32 PreviousPrice = 1;
-	int32 OpenPrice = 2;  
-	int32 HighestPrice = 3;
-	int32 LowestPrice = 4;
-	int32 ClosePrice = 5;   
-	int32 AveragePrice = 6;
-	int32 Volume = 7;
-	int32 Value = 8;   
+    int64 PreviousPrice = 1;
+	int64 OpenPrice = 2;  
+	int64 HighestPrice = 3;
+	int64 LowestPrice = 4;
+	int64 ClosePrice = 5;   
+	int64 AveragePrice = 6;
+	int64 Volume = 7;
+	int64 Value = 8;   
 }

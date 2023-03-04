@@ -18,7 +18,9 @@ func Serve() {
 
 	srv := grpc.NewServer()
 	initLogic()
-	pb.RegisterOhlcServer(srv, &handler.GrpcHandler{})
+	pb.RegisterOhlcServer(srv, &handler.GrpcHandler{
+		OhlcUsecase: ohlcUsecase,
+	})
 	reflection.Register(srv)
 
 	if err = srv.Serve(listener); err != nil {

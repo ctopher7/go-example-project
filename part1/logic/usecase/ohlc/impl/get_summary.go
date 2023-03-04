@@ -1,14 +1,20 @@
 package impl
 
-import "fmt"
+import (
+	"fmt"
 
-func (u *usecase) PopulateData() error {
+	"github.com/ctopher7/gltc/v2/part1/model"
+)
+
+func (u *usecase) GetSummary(req model.GetSummaryReq) (res model.Ohlc, err error) {
 	jsonSlice, err := u.fsDatalogic.GetAllNDJsonFileInDir("subsetdata")
 	if err != nil {
-		return err
+		return
 	}
-	for _, json := range jsonSlice {
-		fmt.Println(json)
+	ohlc, err := u.ohlcDatalogic.CalculateOhlc(jsonSlice)
+	if err != nil {
+		return
 	}
-	return nil
+	fmt.Printf("%+v \n", ohlc)
+	return
 }
