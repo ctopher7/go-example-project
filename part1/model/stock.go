@@ -5,6 +5,7 @@ type Stock struct {
 	OrderBook        string `json:"order_book"`
 	Price            string `json:"price"`
 	StockCode        string `json:"stock_code"`
+	Quantity         string `json:"quantity"`
 	ExecutedQuantity string `json:"executed_quantity"`
 	ExecutionPrice   string `json:"execution_price"`
 	OrderVerb        string `json:"order_verb"`
