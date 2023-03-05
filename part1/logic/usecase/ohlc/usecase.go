@@ -7,6 +7,6 @@ import (
 )
 
 type Usecase interface {
-	GetSummary(req model.GetSummaryReq) (res model.Ohlc, err error)
+	GetSummary(ctx context.Context, req model.GetSummaryReq) (res model.Ohlc, err error)
 	CalculateData(ctx context.Context) error
 }

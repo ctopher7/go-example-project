@@ -2,17 +2,21 @@ package impl
 
 import (
 	fsDl "github.com/ctopher7/gltc/v2/part1/logic/datalogic/fs"
-	fsRepo "github.com/ctopher7/gltc/v2/part1/logic/repository/fs"
+	ioRepo "github.com/ctopher7/gltc/v2/part1/logic/repository/io"
+	jsonRepo "github.com/ctopher7/gltc/v2/part1/logic/repository/json"
 )
 
 type datalogic struct {
-	fsRepository fsRepo.Repository
+	io   ioRepo.Repository
+	json jsonRepo.Repository
 }
 
 func New(
-	fsRepository fsRepo.Repository,
+	io ioRepo.Repository,
+	json jsonRepo.Repository,
 ) fsDl.Datalogic {
 	return &datalogic{
-		fsRepository: fsRepository,
+		io:   io,
+		json: json,
 	}
 }

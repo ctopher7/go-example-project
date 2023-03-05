@@ -16,7 +16,7 @@ type GrpcHandler struct {
 func (h *GrpcHandler) GetSummary(ctx context.Context, in *pb.GetSummaryRequest) (out *pb.GetSummaryResponse, err error) {
 	out = &pb.GetSummaryResponse{}
 
-	res, err := h.OhlcUsecase.GetSummary(model.GetSummaryReq{
+	res, err := h.OhlcUsecase.GetSummary(ctx, model.GetSummaryReq{
 		StockName: in.GetStockName(),
 	})
 	if err != nil {

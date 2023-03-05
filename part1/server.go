@@ -10,14 +10,15 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-func Serve() {
+func ServeGrpc() {
 	listener, err := net.Listen("tcp", ":9000")
 	if err != nil {
 		panic(err)
 	}
 
 	srv := grpc.NewServer()
-	initLogic()
+	res := InitResource()
+	initLogic(res)
 	pb.RegisterOhlcServer(srv, &handler.GrpcHandler{
 		OhlcUsecase: ohlcUsecase,
 	})
@@ -27,4 +28,9 @@ func Serve() {
 		log.Fatalf("failed to serve, error: %v", err)
 	}
 
+}
+
+func ServeConsumer() {
+	initSarama()
+	mainSarama()
 }
