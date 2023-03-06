@@ -81,7 +81,7 @@ func (d *datalogic) readFiles(idx int, file fs.FileInfo, directoryPath string, o
 	got := json.NewDecoder(strings.NewReader(string(byteValue)))
 	for {
 		var json model.Stock
-		err = got.Decode(&json)
+		err = d.json.Decode(got, &json)
 		if err != nil {
 			//io.EOF is the expected err value for end of file
 			if err != io.EOF {

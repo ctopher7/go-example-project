@@ -3,7 +3,6 @@ package impl
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/ctopher7/gltc/v2/part1/constant"
 	"github.com/ctopher7/gltc/v2/part1/model"
@@ -19,8 +18,6 @@ func (d *datalogic) PublishOhlc(ctx context.Context, data []string) error {
 		}
 		_, _, err = d.mqRepository.SendMessage(ctx, constant.ProcessOhlcTopic, string(json))
 		if err != nil {
-			fmt.Println("============,,", err)
-
 			return err
 		}
 	}

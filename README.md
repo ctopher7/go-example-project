@@ -16,25 +16,6 @@ Created by Christopher Tok for the use of Bibit / Stockbit interview test
 - connect to ``` localhost:9000 ``` using your GRPC client
 - try make a request to getSummary endpoint, for example:
 
-
-## Some useful command
-```
-//see inside redis
-make redis-cli
-
-//generate .pb.go from .proto
-make pb
-
-//produce manual via command line
-make producer
-```
-
-## Experiences with tech stacks
-- Go: ~3 years (used professionally)
-- Redis: ~3 years (used professionally and on personal projects)
-- Docker: ~3 years (used on personal projects)
-- Redpanda: heard about this mq, usually use NSQ (professionally). Just tried it now.
-
 ## Architecture of part 1 challange
 repo architecture:
 - Config (to be injected to any layer / resource initialization. consist of configurations)
@@ -58,3 +39,24 @@ read stock_name
 get data from .ndjson (source of truth)
 calculate ohlc (only the data of the stock_name, not all data)
 store to redis (expiry 10 seconds, can be extended)
+
+## Some useful command
+```
+//see inside redis
+make redis-cli
+
+//generate .pb.go from .proto
+make pb
+
+//produce manual via command line
+make producer
+
+//generate mock
+make mockery
+```
+
+## Experiences with tech stacks
+- Go: ~3 years (used professionally)
+- Redis: ~3 years (used professionally and on personal projects)
+- Docker: ~3 years (used on personal projects)
+- Redpanda: heard about this mq, usually use NSQ (professionally). Just tried it now.
