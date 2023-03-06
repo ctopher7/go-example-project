@@ -8,5 +8,5 @@ import (
 
 type Usecase interface {
 	GetSummary(ctx context.Context, req model.GetSummaryReq) (res model.Ohlc, err error)
-	CalculateData(ctx context.Context) error
+	ProcessOhlc(ctx context.Context, req model.ProcessOhlc) (err error)
 }

@@ -5,12 +5,12 @@ type GetSummaryReq struct {
 }
 
 type Ohlc struct {
-	PreviousPrice int64
-	OpenPrice     int64
-	HighestPrice  int64
-	LowestPrice   int64
-	ClosePrice    int64
-	AveragePrice  int64
-	Volume        int64
-	Value         int64
+	PreviousPrice int64 `json:"previous_price"`
+	OpenPrice     int64 `json:"open_price"`
+	HighestPrice  int64 `json:"highest_price"`
+	LowestPrice   int64 `json:"lowest_price"`
+	ClosePrice    int64 `json:"close_price"`
+	AveragePrice  int64 `json:"average_price"`
+	Volume        int64 `json:"volume"`
+	Value         int64 `json:"value"`
 }

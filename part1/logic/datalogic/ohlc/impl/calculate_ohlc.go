@@ -7,16 +7,18 @@ import (
 	"github.com/ctopher7/gltc/v2/part1/model"
 )
 
-func (d *datalogic) CalculateOhlc(dataset []model.Stock) (res map[string]model.Ohlc, err error) {
+func (d *datalogic) CalculateOhlc(dataset []model.Stock, stockName string) (res model.Ohlc, listOfStockName []string, err error) {
 	mapByStockName := make(map[string][]model.Stock)
-	res = make(map[string]model.Ohlc)
 	for _, data := range dataset {
 		mapByStockName[data.StockCode] = append(mapByStockName[data.StockCode], data)
 	}
 
-	for stockName, data := range mapByStockName {
+	for key := range mapByStockName {
+		listOfStockName = append(listOfStockName, key)
+	}
+
+	if data, ok := mapByStockName[stockName]; ok {
 		for idx, stock := range data {
-			ohlc := res[stockName]
 			if idx == 0 && stock.Quantity == "" {
 				price := int64(0)
 				if stock.Price != "" {
@@ -25,8 +27,7 @@ func (d *datalogic) CalculateOhlc(dataset []model.Stock) (res map[string]model.O
 						return
 					}
 				}
-				ohlc.PreviousPrice = price
-				res[stockName] = ohlc
+				res.PreviousPrice = price
 				continue
 			}
 
@@ -47,21 +48,19 @@ func (d *datalogic) CalculateOhlc(dataset []model.Stock) (res map[string]model.O
 			}
 
 			if stock.TransactionType == "E" || stock.TransactionType == "P" {
-				if ohlc.OpenPrice == 0 {
-					ohlc.OpenPrice = executionPrice
+				if res.OpenPrice == 0 {
+					res.OpenPrice = executionPrice
 				}
-				if ohlc.HighestPrice == 0 || ohlc.HighestPrice < executionPrice {
-					ohlc.HighestPrice = executionPrice
+				if res.HighestPrice == 0 || res.HighestPrice < executionPrice {
+					res.HighestPrice = executionPrice
 				}
-				if ohlc.LowestPrice == 0 || ohlc.LowestPrice > executionPrice {
-					ohlc.LowestPrice = executionPrice
+				if res.LowestPrice == 0 || res.LowestPrice > executionPrice {
+					res.LowestPrice = executionPrice
 				}
-				ohlc.Volume += executedQty
-				ohlc.Value += executedQty * executionPrice
+				res.Volume += executedQty
+				res.Value += executedQty * executionPrice
 
 			}
-
-			res[stockName] = ohlc
 		}
 
 		closePrice := int64(0)
@@ -76,10 +75,8 @@ func (d *datalogic) CalculateOhlc(dataset []model.Stock) (res map[string]model.O
 			}
 		}
 
-		ohlc := res[stockName]
-		ohlc.AveragePrice = int64(math.Round(float64(ohlc.Value) / float64(ohlc.Volume)))
-		ohlc.ClosePrice = closePrice
-		res[stockName] = ohlc
+		res.AveragePrice = int64(math.Round(float64(res.Value) / float64(res.Volume)))
+		res.ClosePrice = closePrice
 	}
 
 	return

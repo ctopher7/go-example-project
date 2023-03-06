@@ -31,6 +31,8 @@ func ServeGrpc() {
 }
 
 func ServeConsumer() {
+	res := InitResource()
+	initLogic(res)
 	initSarama()
 	mainSarama()
 }

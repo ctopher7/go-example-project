@@ -12,6 +12,8 @@ import (
 	"syscall"
 
 	"github.com/Shopify/sarama"
+	"github.com/ctopher7/gltc/v2/part1/constant"
+	"github.com/ctopher7/gltc/v2/part1/logic/handler"
 )
 
 // Sarama configuration options
@@ -26,10 +28,10 @@ var (
 )
 
 func initSarama() {
-	flag.StringVar(&brokers, "brokers", "redpanda-0:9092", "Kafka bootstrap brokers to connect to, as a comma separated list")
+	flag.StringVar(&brokers, "brokers", "localhost:19092", "Kafka bootstrap brokers to connect to, as a comma separated list")
 	flag.StringVar(&group, "group", "test", "Kafka consumer group definition")
 	flag.StringVar(&version, "version", "2.1.1", "Kafka cluster version")
-	flag.StringVar(&topics, "topics", "test", "Kafka topics to be consumed, as a comma separated list")
+	flag.StringVar(&topics, "topics", "process_ohlc", "Kafka topics to be consumed, as a comma separated list")
 	flag.StringVar(&assignor, "assignor", "range", "Consumer group partition assignment strategy (range, roundrobin, sticky)")
 	flag.BoolVar(&oldest, "oldest", true, "Kafka consumer consume initial offset from oldest")
 	flag.BoolVar(&verbose, "verbose", false, "Sarama logging")
@@ -84,6 +86,9 @@ func mainSarama() {
 	 */
 	consumer := Consumer{
 		ready: make(chan bool),
+		handler: handler.ConsumerHandler{
+			OhlcUsecase: ohlcUsecase,
+		},
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -154,7 +159,8 @@ func toggleConsumptionFlow(client sarama.ConsumerGroup, isPaused *bool) {
 
 // Consumer represents a Sarama consumer group consumer
 type Consumer struct {
-	ready chan bool
+	ready   chan bool
+	handler handler.ConsumerHandler
 }
 
 // Setup is run at the beginning of a new session, before ConsumeClaim
@@ -178,7 +184,13 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 	for {
 		select {
 		case message := <-claim.Messages():
-			log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
+			topics := map[string]func([]byte){
+				constant.ProcessOhlcTopic: consumer.handler.ProcessOhlc,
+			}
+
+			if val, ok := topics[message.Topic]; ok {
+				val(message.Value)
+			}
 			session.MarkMessage(message, "")
 
 		// Should return when `session.Context()` is done.

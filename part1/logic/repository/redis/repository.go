@@ -2,10 +2,11 @@ package redis
 
 import (
 	"context"
-
-	"github.com/redis/go-redis/v9"
+	"time"
 )
 
 type Repository interface {
-	SetNx(ctx context.Context, key string, value interface{}, expiry int) *redis.BoolCmd
+	HSet(ctx context.Context, key string, values ...interface{}) (int64, error)
+	HGetAll(ctx context.Context, key string) (map[string]string, error)
+	Expire(ctx context.Context, key string, expiry time.Duration) (bool, error)
 }

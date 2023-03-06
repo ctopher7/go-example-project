@@ -59,6 +59,8 @@ services:
       - --mode dev-container
       # enable logs for debugging.
       - --default-log-level=debug
+      - --set redpanda.kafka_batch_max_bytes=20971520
+      - --set redpanda.kafka_request_max_bytes=20971520
     image: docker.redpanda.com/vectorized/redpanda:v22.3.11
     container_name: redpanda-0
     volumes:
