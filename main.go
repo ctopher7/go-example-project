@@ -9,8 +9,8 @@ import (
 func main() {
 	switch os.Args[1] {
 	case "grpc":
-		part1.ServeGrpc()
+		part1.ServeGrpc(os.Args[2])
 	case "consumer":
-		part1.ServeConsumer()
+		part1.ServeConsumer(os.Args[2])
 	}
 }

@@ -27,8 +27,8 @@ var (
 	verbose  = false
 )
 
-func initSarama() {
-	flag.StringVar(&brokers, "brokers", "localhost:19092", "Kafka bootstrap brokers to connect to, as a comma separated list")
+func initSarama(cfg Config) {
+	flag.StringVar(&brokers, "brokers", cfg.Mq.Broker, "Kafka bootstrap brokers to connect to, as a comma separated list")
 	flag.StringVar(&group, "group", "test", "Kafka consumer group definition")
 	flag.StringVar(&version, "version", "2.1.1", "Kafka cluster version")
 	flag.StringVar(&topics, "topics", "process_ohlc", "Kafka topics to be consumed, as a comma separated list")

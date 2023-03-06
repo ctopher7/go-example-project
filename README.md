@@ -7,19 +7,26 @@ Created by Christopher Tok for the use of Bibit / Stockbit interview test
 - Apple Silicon (arm64)
 
 ## Pre-requisites
-- Internet Connection
+- Internet Connection (for downloading docker images)
 - Docker
+- GRPC client (bloomRPC, grpcox, kreya, etc.)
+
+## How to use
+- run this command ``` make start ```
+- connect to ``` localhost:9000 ``` using your GRPC client
+- try make a request to getSummary endpoint, for example:
+
 
 ## Some useful command
 ```
 //see inside redis
-docker run --network=container:redis -it redis redis-cli -h redis -a testing123
+make redis-cli
 
 //generate .pb.go from .proto
 make pb
 
 //produce manual via command line
-docker exec -it redpanda-0 rpk topic produce process_ohlc
+make producer
 ```
 
 ## Experiences with tech stacks
@@ -29,6 +36,14 @@ docker exec -it redpanda-0 rpk topic produce process_ohlc
 - Redpanda: heard about this mq, usually use NSQ (professionally). Just tried it now.
 
 ## Architecture of part 1 challange
+repo architecture:
+- Config (to be injected to any layer / resource initialization. consist of configurations)
+- Resources (to be injected to repository layer, usually client for other dependency like redis and kafka)
+- Handler (layer for serialization and deserialization, call usecase)
+- Usecase (layer for business logic, consists of datalogic and repository)
+- Datalogic (layer for data logic, consists of reposistory)
+- Repository (wrapper for other library, no unit test because dependencies not mockable)
+
 flow get summary API:
 read data from cache by stock name on request
 -> if exist, return data
@@ -41,5 +56,5 @@ return ohlc by stock name on request
 flow process_ohlc consumer:
 read stock_name
 get data from .ndjson (source of truth)
-calculate ohlc
-store to redis
+calculate ohlc (only the data of the stock_name, not all data)
+store to redis (expiry 10 seconds, can be extended)

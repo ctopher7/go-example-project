@@ -10,14 +10,18 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-func ServeGrpc() {
-	listener, err := net.Listen("tcp", ":9000")
+func ServeGrpc(env string) {
+	cfg, err := ReadConfig(env)
 	if err != nil {
 		panic(err)
 	}
 
+	listener, err := net.Listen("tcp", cfg.GrpcPort)
+	if err != nil {
+		panic(err)
+	}
 	srv := grpc.NewServer()
-	res := InitResource()
+	res := InitResource(cfg)
 	initLogic(res)
 	pb.RegisterOhlcServer(srv, &handler.GrpcHandler{
 		OhlcUsecase: ohlcUsecase,
@@ -30,9 +34,13 @@ func ServeGrpc() {
 
 }
 
-func ServeConsumer() {
-	res := InitResource()
+func ServeConsumer(env string) {
+	cfg, err := ReadConfig(env)
+	if err != nil {
+		panic(err)
+	}
+	res := InitResource(cfg)
 	initLogic(res)
-	initSarama()
+	initSarama(cfg)
 	mainSarama()
 }

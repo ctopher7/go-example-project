@@ -10,10 +10,10 @@ type Resource struct {
 	MqProducer      sarama.SyncProducer
 }
 
-func InitResource() Resource {
+func InitResource(cfg Config) Resource {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "testing123",
+		Addr:     cfg.Redis.Host,
+		Password: cfg.Redis.Password,
 		DB:       0,
 	})
 
@@ -23,7 +23,7 @@ func InitResource() Resource {
 	config.Producer.Return.Successes = true
 	config.Producer.MaxMessageBytes = 200000000
 
-	producer, err := sarama.NewSyncProducer([]string{"localhost:19092"}, config)
+	producer, err := sarama.NewSyncProducer([]string{cfg.Mq.Broker}, config)
 	if err != nil {
 		panic(err)
 	}

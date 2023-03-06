@@ -12,4 +12,5 @@ RUN CGO_ENABLED=0 go build -o /go/bin/app
 FROM gcr.io/distroless/static-debian11
 
 COPY --from=build /go/bin/app /
-CMD ["/app","consumer"]
+COPY ./files /files
+CMD ["/app","consumer","docker"]
