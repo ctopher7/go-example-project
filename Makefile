@@ -12,7 +12,3 @@ redis-cli:
 
 producer:
 	@docker exec -it redpanda-0 rpk topic produce process_ohlc
-
-start:
-	@docker-compose up -d
-	@python -m webbrowser "http://localhost:6969"

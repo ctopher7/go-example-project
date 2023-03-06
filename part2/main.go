@@ -26,65 +26,50 @@ type Summary struct {
 	Prev      int64    `json:"prev"`
 }
 
-var result = map[string]Summary{}
+func ohlc(records []ChangeRecord, indexMembers []IndexMember) (result map[string]Summary) {
+	result = make(map[string]Summary)
 
-func ohlc(x []string, w []ChangeRecord, p []IndexMember) map[string]Summary {
-	for _, y := range x {
-		found, not := result[y]
-		if not {
-			found = Summary{}
+	for _, record := range records {
+		temp := Summary{}
+		if val, ok := result[record.StockCode]; ok {
+			temp = val
 		}
-		found.StockCode = y
-		for _, u := range w {
-			if u.StockCode == y {
-				if u.Quantity == 0 {
-					found.Prev = u.Price
-					fmt.Println("done")
-					fmt.Println("price updated")
-					result[y] = found
-				} else if u.Quantity > 0 && result[y].Open == 0 {
-					found.Open = u.Price
-					fmt.Println("done")
-					fmt.Println("price updated")
-					result[y] = found
-				} else {
-					found.Close = u.Price
-					if found.High < u.Price {
-						found.High = u.Price
-					}
-					if found.Low > u.Price {
-						found.Low = u.Price
-					}
-					fmt.Println("done")
-					fmt.Println("price updated")
-					result[y] = found
-				}
-			} else {
-				fmt.Println("done")
-				fmt.Println("price updated")
-				result[y] = found
-			}
+
+		if record.Quantity == 0 {
+			temp.Prev = record.Price
+			result[record.StockCode] = temp
+			continue
 		}
-		for _, i := range p {
-			if i.StockCode == y {
-				found.IndexCode = append(found.IndexCode, i.IndexCode)
-				fmt.Println("index updated")
-				result[y] = found
-			} else {
-				fmt.Println("index updated")
-				result[y] = found
-			}
+		if temp.Open == 0 && record.Quantity > 0 {
+			temp.Open = record.Price
+			result[record.StockCode] = temp
+			continue
 		}
+		temp.Close = record.Price
+		if temp.High < record.Price {
+			temp.High = record.Price
+		}
+		if temp.Low > record.Price || temp.Low == 0 {
+			temp.Low = record.Price
+		}
+		result[record.StockCode] = temp
+	}
+
+	for _, indexMember := range indexMembers {
+		temp := Summary{}
+		if val, ok := result[indexMember.StockCode]; ok {
+			temp = val
+		}
+		temp.IndexCode = append(temp.IndexCode, indexMember.IndexCode)
+		temp.StockCode = indexMember.StockCode
+		result[indexMember.StockCode] = temp
 	}
 
 	return result
 }
 
-func main() {
-	x := []string{
-		"BBCA", "BBRI", "ASII", "GOTO",
-	}
-	w := []ChangeRecord{
+var (
+	recs = []ChangeRecord{
 		{
 			StockCode: "BBCA",
 			Price:     8783,
@@ -190,7 +175,7 @@ func main() {
 			Quantity:  1,
 		},
 	}
-	p := []IndexMember{
+	indexes = []IndexMember{
 		{
 			StockCode: "BBCA",
 			IndexCode: "IHSG",
@@ -232,9 +217,15 @@ func main() {
 			IndexCode: "KOMPAS100",
 		},
 	}
-	r := ohlc(x, w, p)
-	for _, v := range r {
-		jss, _ := json.Marshal(v)
-		fmt.Println("summary: ", string(jss))
+)
+
+func Main() {
+	got := ohlc(recs, indexes)
+	for _, v := range got {
+		jsonValue, err := json.Marshal(v)
+		if err != nil {
+			fmt.Println("error: ", err.Error())
+		}
+		fmt.Println("summary: ", string(jsonValue))
 	}
 }
